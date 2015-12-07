@@ -19,10 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Socket.h" />
+    <ClInclude Include="ClientSocket.h" />
+    <ClInclude Include="ServerSocket.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Socket.cpp" />
+    <ClCompile Include="ClientSocket.cpp" />
+    <ClCompile Include="SocketListener.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0BA72226-64F8-40B3-95FC-53FE35CC96B3}</ProjectGuid>

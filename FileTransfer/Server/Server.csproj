@@ -33,7 +33,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ServerInterface">
+    <Reference Include="ServerInterface, Version=1.0.5818.41466, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Debug\ServerInterface.dll</HintPath>
     </Reference>
     <Reference Include="System" />

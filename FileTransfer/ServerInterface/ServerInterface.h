@@ -8,7 +8,7 @@ using namespace System::Threading;
 
 namespace ServerInterface {
 
-	ref class MessagePrinter
+	ref class MessageListener
 	{
 	private:
 		System::String^ return_message;
@@ -17,13 +17,13 @@ namespace ServerInterface {
 	public:
 
 
-		MessagePrinter()
+		MessageListener()
 		{
 
 		}
 
 		//controls Thread that prints message
-		void Print()
+		void Listen()
 		{
 			// obtain reference to currently executing thread
 			Thread^ current = Thread::CurrentThread;
@@ -54,17 +54,18 @@ namespace ServerInterface {
 		static System::String^ task_runner() {
 			// Create and name each thread. Use MessagePrinter's
 			// Print method as argument to ThreadStart delegate.
-			MessagePrinter^ printer1 = gcnew MessagePrinter();
-			Thread^ thread1 = gcnew Thread(gcnew ThreadStart(printer1, &MessagePrinter::Print));
+			MessageListener^ listener = gcnew MessageListener();
+			Thread^ thread1 = gcnew Thread(gcnew ThreadStart(listener, &MessageListener::Listen));
 			thread1->Name = "thread1";
 
 
-			Console::WriteLine("Starting threads");
-			// call each thread's Start method to place each
-			// thread in Started state
+			Console::WriteLine("Starting thread");
+			
 			thread1->Start();
 
-			Console::WriteLine("Threads started\n");
+			Console::WriteLine("Thread started\n");
+			
+
 			thread1->Join();
 
 			return gcnew System::String("Message Recieved");
