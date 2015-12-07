@@ -42,19 +42,26 @@ namespace Server
 
         private void GetDirectories(DirectoryInfo[] subDirs, TreeNode nodeToAddTo)
         {
-            TreeNode aNode;
-            DirectoryInfo[] subSubDirs;
-            foreach (DirectoryInfo subDir in subDirs)
-            {
-                aNode = new TreeNode(subDir.Name, 0, 0);
-                aNode.Tag = subDir;
-                aNode.ImageKey = "folder";
-                subSubDirs = subDir.GetDirectories();
-                if (subSubDirs.Length != 0)
+            try
+            { 
+                TreeNode aNode;
+                DirectoryInfo[] subSubDirs;
+                foreach (DirectoryInfo subDir in subDirs)
                 {
-                    GetDirectories(subSubDirs, aNode);
+                    aNode = new TreeNode(subDir.Name, 0, 0);
+                    aNode.Tag = subDir;
+                    aNode.ImageKey = "folder";
+                    subSubDirs = subDir.GetDirectories();
+                    if (subSubDirs.Length != 0)
+                    {
+                        GetDirectories(subSubDirs, aNode);
+                    }
+                    nodeToAddTo.Nodes.Add(aNode);
                 }
-                nodeToAddTo.Nodes.Add(aNode);
+            }
+            catch (System.UnauthorizedAccessException)
+            {
+                return;
             }
         }
 
