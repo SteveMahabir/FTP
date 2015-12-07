@@ -92,7 +92,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)lib\$(Configuration)\$(Platform)\</OutDir>
+    <OutDir>$(SolutionDir)lib\$(Configuration)$(Platform)\</OutDir>
     <IncludePath>$(SolutionDir)FTPLibrary;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)lib\$(Configuration)$(Platform)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
