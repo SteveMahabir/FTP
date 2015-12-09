@@ -4,21 +4,22 @@
 
 #include <string>
 
+
 using namespace System;
 
 namespace ClientInterface {
 
 	public ref class ClientSocket
 	{
+
+	private:
+		System::String^ _ipaddress;
+		unsigned _port;
+
 	public:
-		
+		ClientSocket(System::String^ ip, unsigned port);
 
-		static void SendMessage();
+		void SendMessage();
 
-		static std::string testing_method();
-
-		static int testing_method_2();
-
-		static System::String^ testing_method_3();
 	};
 }

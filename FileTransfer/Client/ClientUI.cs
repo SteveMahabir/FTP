@@ -9,11 +9,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ClientInterface;
+using System.Net;
 
 namespace Client
 {
     public partial class ClientUI : Form
     {
+        String _ipaddress;
+        uint _portnumber;
+
         public ClientUI()
         {
             InitializeComponent();
@@ -26,15 +30,30 @@ namespace Client
         private void buttonSend_Click(object sender, EventArgs e)
         {
             try {
+                IPAddress ipadd;
+                if (IPAddress.TryParse(textIp.Text, out ipadd)) {
+                    _ipaddress = textIp.Text;
+                    _portnumber = uint.Parse(textPort.Text);
+                    ClientSocket c = new ClientSocket(_ipaddress, _portnumber);
+                    c.SendMessage();
+                }
+                else
+                    MessageBox.Show("Not a valid IP Address");
+
                 MessageBox.Show("Message Sent!", "Success", MessageBoxButtons.OK);
-                ClientSocket.SendMessage();
+            }
+            catch(System.FormatException ex)
+            {
+                MessageBox.Show("Not a valid Port Number", ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch(Exception ex){
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Send Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }          
             
         }
 
+
+        #region File Directory Browsing
         private void PopulateTreeView()
         {
             TreeNode rootNode;
@@ -106,5 +125,6 @@ namespace Client
 
             listExplorer.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
+        #endregion
     }
 }

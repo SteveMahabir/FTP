@@ -31,38 +31,32 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Sever));
             this.buttonAction = new System.Windows.Forms.Button();
-            this.listStatus = new System.Windows.Forms.ListView();
             this.treeExplorer = new System.Windows.Forms.TreeView();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.listExplorer = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.listStatus = new System.Windows.Forms.ListBox();
+            this.panelInfo = new System.Windows.Forms.Panel();
+            this.labelIp = new System.Windows.Forms.Label();
+            this.textIp = new System.Windows.Forms.TextBox();
+            this.labelPort = new System.Windows.Forms.Label();
+            this.textPort = new System.Windows.Forms.TextBox();
+            this.panelInfo.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonAction
             // 
             this.buttonAction.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.buttonAction.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.buttonAction.Location = new System.Drawing.Point(0, 354);
+            this.buttonAction.Location = new System.Drawing.Point(0, 325);
             this.buttonAction.Name = "buttonAction";
-            this.buttonAction.Size = new System.Drawing.Size(707, 32);
+            this.buttonAction.Size = new System.Drawing.Size(718, 32);
             this.buttonAction.TabIndex = 0;
             this.buttonAction.Text = "Start Listening";
             this.buttonAction.UseVisualStyleBackColor = false;
             this.buttonAction.Click += new System.EventHandler(this.buttonAction_Click);
-            // 
-            // listStatus
-            // 
-            this.listStatus.BackColor = System.Drawing.SystemColors.InactiveCaptionText;
-            this.listStatus.Dock = System.Windows.Forms.DockStyle.Right;
-            this.listStatus.ForeColor = System.Drawing.Color.Lime;
-            this.listStatus.Location = new System.Drawing.Point(497, 0);
-            this.listStatus.Name = "listStatus";
-            this.listStatus.Size = new System.Drawing.Size(210, 354);
-            this.listStatus.TabIndex = 1;
-            this.listStatus.UseCompatibleStateImageBehavior = false;
-            this.listStatus.View = System.Windows.Forms.View.List;
             // 
             // treeExplorer
             // 
@@ -74,7 +68,7 @@
             this.treeExplorer.Location = new System.Drawing.Point(0, 0);
             this.treeExplorer.Name = "treeExplorer";
             this.treeExplorer.SelectedImageIndex = 0;
-            this.treeExplorer.Size = new System.Drawing.Size(185, 354);
+            this.treeExplorer.Size = new System.Drawing.Size(185, 325);
             this.treeExplorer.TabIndex = 2;
             this.treeExplorer.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeExplorer_NodeMouseClick);
             // 
@@ -97,7 +91,7 @@
             this.listExplorer.ForeColor = System.Drawing.Color.Lime;
             this.listExplorer.Location = new System.Drawing.Point(185, 0);
             this.listExplorer.Name = "listExplorer";
-            this.listExplorer.Size = new System.Drawing.Size(312, 354);
+            this.listExplorer.Size = new System.Drawing.Size(533, 325);
             this.listExplorer.SmallImageList = this.imageList1;
             this.listExplorer.TabIndex = 3;
             this.listExplorer.UseCompatibleStateImageBehavior = false;
@@ -115,20 +109,87 @@
             // 
             this.columnHeader3.Text = "Last Modified";
             // 
+            // listStatus
+            // 
+            this.listStatus.BackColor = System.Drawing.Color.Black;
+            this.listStatus.Dock = System.Windows.Forms.DockStyle.Right;
+            this.listStatus.ForeColor = System.Drawing.Color.Lime;
+            this.listStatus.FormattingEnabled = true;
+            this.listStatus.Location = new System.Drawing.Point(503, 0);
+            this.listStatus.Name = "listStatus";
+            this.listStatus.Size = new System.Drawing.Size(215, 325);
+            this.listStatus.TabIndex = 4;
+            // 
+            // panelInfo
+            // 
+            this.panelInfo.BackColor = System.Drawing.Color.Black;
+            this.panelInfo.Controls.Add(this.labelIp);
+            this.panelInfo.Controls.Add(this.textIp);
+            this.panelInfo.Controls.Add(this.labelPort);
+            this.panelInfo.Controls.Add(this.textPort);
+            this.panelInfo.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelInfo.ForeColor = System.Drawing.Color.Lime;
+            this.panelInfo.Location = new System.Drawing.Point(185, 288);
+            this.panelInfo.Name = "panelInfo";
+            this.panelInfo.Size = new System.Drawing.Size(318, 37);
+            this.panelInfo.TabIndex = 5;
+            // 
+            // labelIp
+            // 
+            this.labelIp.AutoSize = true;
+            this.labelIp.Location = new System.Drawing.Point(114, 11);
+            this.labelIp.Name = "labelIp";
+            this.labelIp.Size = new System.Drawing.Size(64, 13);
+            this.labelIp.TabIndex = 3;
+            this.labelIp.Text = ": IP Address";
+            // 
+            // textIp
+            // 
+            this.textIp.BackColor = System.Drawing.Color.Black;
+            this.textIp.ForeColor = System.Drawing.Color.Lime;
+            this.textIp.Location = new System.Drawing.Point(6, 8);
+            this.textIp.Name = "textIp";
+            this.textIp.Size = new System.Drawing.Size(108, 20);
+            this.textIp.TabIndex = 2;
+            this.textIp.Text = "127.0.0.1";
+            this.textIp.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // labelPort
+            // 
+            this.labelPort.AutoSize = true;
+            this.labelPort.Location = new System.Drawing.Point(231, 11);
+            this.labelPort.Name = "labelPort";
+            this.labelPort.Size = new System.Drawing.Size(29, 13);
+            this.labelPort.TabIndex = 1;
+            this.labelPort.Text = "Port:";
+            // 
+            // textPort
+            // 
+            this.textPort.BackColor = System.Drawing.Color.Black;
+            this.textPort.ForeColor = System.Drawing.Color.Lime;
+            this.textPort.Location = new System.Drawing.Point(266, 8);
+            this.textPort.Name = "textPort";
+            this.textPort.Size = new System.Drawing.Size(49, 20);
+            this.textPort.TabIndex = 0;
+            this.textPort.Text = "70007";
+            this.textPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // Sever
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.ClientSize = new System.Drawing.Size(707, 386);
+            this.ClientSize = new System.Drawing.Size(718, 357);
+            this.Controls.Add(this.panelInfo);
+            this.Controls.Add(this.listStatus);
             this.Controls.Add(this.listExplorer);
             this.Controls.Add(this.treeExplorer);
-            this.Controls.Add(this.listStatus);
             this.Controls.Add(this.buttonAction);
             this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.Name = "Sever";
             this.Text = "ServerUI";
-            this.Load += new System.EventHandler(this.Sever_Load);
+            this.panelInfo.ResumeLayout(false);
+            this.panelInfo.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -136,12 +197,17 @@
         #endregion
 
         private System.Windows.Forms.Button buttonAction;
-        private System.Windows.Forms.ListView listStatus;
         private System.Windows.Forms.TreeView treeExplorer;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.ListView listExplorer;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.ListBox listStatus;
+        private System.Windows.Forms.Panel panelInfo;
+        private System.Windows.Forms.TextBox textPort;
+        private System.Windows.Forms.TextBox textIp;
+        private System.Windows.Forms.Label labelPort;
+        private System.Windows.Forms.Label labelIp;
     }
 }

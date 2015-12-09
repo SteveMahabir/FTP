@@ -10,19 +10,27 @@
 #include <WinSock2.h>
 #pragma comment (lib,"ws2_32.lib")
 
-using namespace std;
 
 namespace socklib {
-
-	unsigned const PORT = 70007;
-
+	 
 	class SocketListener {
-	private:
-		//unsigned const PORT;
+	
 	public:
-		SocketListener(unsigned port, std::string ipaddress) {};
 
-		static std::string startListening();
+		// Constructors
+		SocketListener(std::string ipaddress, unsigned port);
+		~SocketListener();
+
+		// Methods
+		std::string startListening();
+
+		//SOCKET getSocket();
+
+	private:
+		SOCKET hSocket;
+		std::string _ip;
+		unsigned _port;
+
 	};
 
 }

@@ -4,25 +4,23 @@
 
 #include "ClientInterface.h"
 
+#include <msclr\marshal_cppstd.h>
+
 namespace ClientInterface
 {
+
+	ClientSocket::ClientSocket(System::String^ ip, unsigned port) {
+		_ipaddress = ip;
+		_port = port;
+	}
+
+
 	void ClientSocket::SendMessage()
 	{
-		socklib::SocketSender::sendMessage();
+		msclr::interop::marshal_context context;
+		std::string standardString = context.marshal_as<std::string>(_ipaddress);
+		socklib::SocketSender s(standardString, _port);
+		s.sendMessage();
 	}
 
-	std::string ClientSocket::testing_method() 
-	{
-		return "Working";
-	}
-
-	int ClientSocket::testing_method_2()
-	{
-		return EXIT_SUCCESS;
-	}
-
-	System::String^ ClientSocket::testing_method_3() 
-	{
-		return gcnew System::String("Working");
-	}
 }

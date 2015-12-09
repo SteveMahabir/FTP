@@ -16,12 +16,20 @@ namespace socklib {
 
 	unsigned const PORT = 70007;
 
-	class SocketSender
-	{
+	class SocketSender {
+
 	public:
+		SocketSender(std::string ipaddress, unsigned port);
+		~SocketSender();
 
-		static void sendMessage();
+		void sendMessage();
 
+		SOCKET getSocket();
+
+	private:
+		SOCKET hSocket;
+		std::string _ip;
+		unsigned _port;
 	};
 
 

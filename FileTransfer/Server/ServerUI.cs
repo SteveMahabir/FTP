@@ -9,13 +9,17 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ServerInterface;
 using System.IO;
+using System.Net;
 
 namespace Server
 {
+
     public partial class Sever : Form
     {
-
         bool continueListening = false;
+
+        String _ipaddress;
+        uint _portnumber;
 
         public Sever()
         {
@@ -23,9 +27,11 @@ namespace Server
             PopulateTreeView();
             this.treeExplorer.NodeMouseClick +=
                 new TreeNodeMouseClickEventHandler(this.treeExplorer_NodeMouseClick);
+            listStatus.Items.Add(" - Server Status Log -");
 
         }
 
+        #region File Directory Browsing
         private void PopulateTreeView()
         {
             TreeNode rootNode;
@@ -65,65 +71,6 @@ namespace Server
             }
         }
 
-        private void ResizeColumnHeaders()
-        {
-            for (int i = 0; i < this.listStatus.Columns.Count - 1; i++) this.listStatus.AutoResizeColumn(i, ColumnHeaderAutoResizeStyle.ColumnContent);
-            this.listStatus.Columns[this.listStatus.Columns.Count - 1].Width = -2;
-        }
-
-        private async void buttonAction_Click(object sender, EventArgs e)
-        {
-
-            Button b = buttonAction;
-            b.Text = "Listening for Messages...";
-
-            ListViewItem starting_line = new ListViewItem("Server started at " + DateTime.Now.ToShortDateString());
-            listStatus.Items.Add(starting_line);
-
-            continueListening = true;
-
-            try { 
-            String returnLine = await ListenForMessages();
-                returnLine += " at " + DateTime.Now.ToShortDateString();
-            listStatus.Items.Add( new ListViewItem(returnLine.ToString()));
-            //ResizeColumnHeaders();
-            }
-            catch(Exception ex) { MessageBox.Show(ex.Message, "Error"); }
-            //ListenForMessages();
-
-            b.Text = "Start Listening!";
-        }
-
-        public async Task<String> ListenForMessages()
-        {
-            return ServerSocket.task_runner();
-
-            //try
-            //{
-            //    string returnLine = await Task.FromResult<string>(ServerSocket.task_runner());
-            //    MessageBox.Show(returnLine);
-            //    //Task.FromResult<string>(ServerSocket.task_runner());
-            //    //listStatus.Items.Add(returnLine.ToString());
-            //    //ResizeColumnHeaders();
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
-
-            //// Recursive Call - Will ensure always listening until stopped
-            //if (continueListening)
-                
-            //    //ListenForMessages();
-
-            //return null;
-        }
-
-        private void Sever_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void treeExplorer_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
 
@@ -157,5 +104,80 @@ namespace Server
 
             listExplorer.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
+
+        #endregion
+
+
+
+
+
+        private async void buttonAction_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                IPAddress ipadd;
+                if (IPAddress.TryParse(textIp.Text, out ipadd))
+                {
+                    _ipaddress = textIp.Text;
+                    _portnumber = uint.Parse(textPort.Text);
+                }
+                else
+                {
+                    MessageBox.Show("Not a valid IP Address");
+                    return;
+                }
+            }
+            catch (System.FormatException ex)
+            {
+                MessageBox.Show("Not a valid Port Number", ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Listen Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Start to Listen Flag
+            continueListening = true;
+
+            Button b = buttonAction;
+            b.Text = "Stop Listening...";
+            TextBox textIpAddress = textIp;
+            textIp.Enabled = false;
+            textPort.Enabled = false;
+
+            listStatus.Items.Add("Server started at " + DateTime.Now.ToShortDateString());
+
+            do
+            {
+                try
+                {
+                    String returnLine = await ListenForMessages(_ipaddress, _portnumber);
+                    returnLine += " at " + DateTime.Now.ToShortDateString();
+                    listStatus.Items.Add(returnLine.ToString());
+                }
+                catch (Exception ex) { MessageBox.Show(ex.Message, "Error"); }
+                //ListenForMessages();
+            } while (continueListening);
+
+            b.Text = "Start Listening!";
+        }
+
+        public Task<String> ListenForMessages(String ip, uint port)
+        {
+
+
+            Task<String> t1 = new Task<String>
+            (() =>
+            {
+                ServerSocket s = new ServerSocket(ip, port);
+                return s.task_runner();
+            }
+            );
+            t1.Start();
+            return t1;
+        }
+
     }
 }
