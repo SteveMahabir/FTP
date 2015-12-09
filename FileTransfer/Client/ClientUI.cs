@@ -30,17 +30,22 @@ namespace Client
         private void buttonSend_Click(object sender, EventArgs e)
         {
             try {
+
                 IPAddress ipadd;
+
                 if (IPAddress.TryParse(textIp.Text, out ipadd)) {
                     _ipaddress = textIp.Text;
                     _portnumber = uint.Parse(textPort.Text);
                     ClientSocket c = new ClientSocket(_ipaddress, _portnumber);
-                    c.SendMessage();
+                    String returnMessage = c.SendMessage("Testing Message");
+                    MessageBox.Show("Server: " + returnMessage, "Success", MessageBoxButtons.OK);
                 }
+
                 else
                     MessageBox.Show("Not a valid IP Address");
 
-                MessageBox.Show("Message Sent!", "Success", MessageBoxButtons.OK);
+                
+                //MessageBox.Show("Message Sent!", "Success", MessageBoxButtons.OK);
             }
             catch(System.FormatException ex)
             {
@@ -126,5 +131,35 @@ namespace Client
             listExplorer.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
         #endregion
+
+        private void buttonSendFile_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                IPAddress ipadd;
+                if (IPAddress.TryParse(textIp.Text, out ipadd))
+                {
+                    _ipaddress = textIp.Text;
+                    _portnumber = uint.Parse(textPort.Text);
+                    ClientSocket c = new ClientSocket(_ipaddress, _portnumber);
+                    FileStream fs = File.Open("test.txt", FileMode.Open);
+                    
+                    c.SendFile("test.pdf");
+                    c.SendMessage("Hello!");
+                }
+                else
+                    MessageBox.Show("Not a valid IP Address");
+
+                MessageBox.Show("Message Sent!", "Success", MessageBoxButtons.OK);
+            }
+            catch (System.FormatException ex)
+            {
+                MessageBox.Show("Not a valid Port Number", ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Send Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
 }

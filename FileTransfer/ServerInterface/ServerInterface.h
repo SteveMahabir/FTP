@@ -66,6 +66,7 @@ namespace ServerInterface {
 		ServerSocket(System::String^ ip, unsigned port);
 
 		System::String^ task_runner() {
+			
 			// Create and name each thread. Use MessagePrinter's
 			// Print method as argument to ThreadStart delegate.
 			MessageListener^ listener = gcnew MessageListener(_ipaddress, _port);
@@ -83,6 +84,17 @@ namespace ServerInterface {
 			thread1->Join();
 
 			return gcnew System::String("Message Recieved");
+		}
+
+		bool RecieveFile() {
+			msclr::interop::marshal_context context;
+			std::string standardString = context.marshal_as<std::string>(_ipaddress);
+
+			socklib::SocketListener s(standardString, _port);
+
+			// Recieve File
+			return s.ReadFile();
+
 		}
 	};
 

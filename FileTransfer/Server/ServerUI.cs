@@ -143,11 +143,28 @@ namespace Server
 
             Button b = buttonAction;
             b.Text = "Stop Listening...";
+            b.Enabled = false;
             TextBox textIpAddress = textIp;
             textIp.Enabled = false;
             textPort.Enabled = false;
 
             listStatus.Items.Add("Server started at " + DateTime.Now.ToShortDateString());
+
+            //ServerSocket s = new ServerSocket(_ipaddress, _portnumber);
+
+            //s.RecieveFile();
+
+            //bool recieved = s.RecieveFile();
+
+            //if (recieved)
+            //    MessageBox.Show("Message Recieved!");
+            //else
+            //    MessageBox.Show("Error receiving Message");
+
+
+            //return;
+
+
 
             do
             {
@@ -162,6 +179,7 @@ namespace Server
             } while (continueListening);
 
             b.Text = "Start Listening!";
+
         }
 
         public Task<String> ListenForMessages(String ip, uint port)

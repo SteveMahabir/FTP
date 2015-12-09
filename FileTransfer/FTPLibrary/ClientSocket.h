@@ -22,12 +22,23 @@ namespace socklib {
 		SocketSender(std::string ipaddress, unsigned port);
 		~SocketSender();
 
-		void sendMessage();
+		std::string sendMessage(std::string message);
+
+		bool SendFile(std::string filename);
 
 		SOCKET getSocket();
 
 	private:
+
+		// Socket Connection Managers
+		void Connect();
+		void Disconnect();
+
+		// Core Socket Data
 		SOCKET hSocket;
+		WSAData wsaData;
+
+		// Ip address and Port Number - assigned in the Constructor, never changed!
 		std::string _ip;
 		unsigned _port;
 	};

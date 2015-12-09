@@ -38,7 +38,7 @@
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.button1 = new System.Windows.Forms.Button();
+            this.buttonSendFile = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.labelIp = new System.Windows.Forms.Label();
@@ -115,7 +115,7 @@
             // 
             // flowLayoutPanel1
             // 
-            this.flowLayoutPanel1.Controls.Add(this.button1);
+            this.flowLayoutPanel1.Controls.Add(this.buttonSendFile);
             this.flowLayoutPanel1.Controls.Add(this.button2);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Right;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(457, 0);
@@ -123,16 +123,17 @@
             this.flowLayoutPanel1.Size = new System.Drawing.Size(114, 336);
             this.flowLayoutPanel1.TabIndex = 3;
             // 
-            // button1
+            // buttonSendFile
             // 
-            this.button1.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.button1.ForeColor = System.Drawing.Color.Lime;
-            this.button1.Location = new System.Drawing.Point(3, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(111, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Send File";
-            this.button1.UseVisualStyleBackColor = false;
+            this.buttonSendFile.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.buttonSendFile.ForeColor = System.Drawing.Color.Lime;
+            this.buttonSendFile.Location = new System.Drawing.Point(3, 3);
+            this.buttonSendFile.Name = "buttonSendFile";
+            this.buttonSendFile.Size = new System.Drawing.Size(111, 23);
+            this.buttonSendFile.TabIndex = 0;
+            this.buttonSendFile.Text = "Send File";
+            this.buttonSendFile.UseVisualStyleBackColor = false;
+            this.buttonSendFile.Click += new System.EventHandler(this.buttonSendFile_Click);
             // 
             // button2
             // 
@@ -226,7 +227,7 @@
         private System.Windows.Forms.TreeView treeExplorer;
         private System.Windows.Forms.ListView listExplorer;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button buttonSendFile;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.ColumnHeader columnHeader1;

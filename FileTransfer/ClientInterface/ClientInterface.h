@@ -19,7 +19,8 @@ namespace ClientInterface {
 	public:
 		ClientSocket(System::String^ ip, unsigned port);
 
-		void SendMessage();
-
+		System::String^ SendMessage(System::String^ message);
+		
+		bool SendFile(System::String^ ip);
 	};
 }
