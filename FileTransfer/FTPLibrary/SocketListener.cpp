@@ -5,6 +5,9 @@
 #include <thread>
 #include <future>
 
+
+#include <sstream>
+
 namespace socklib
 {
 	// Only Constructor
@@ -95,8 +98,7 @@ namespace socklib
 		auto f = p.get_future();
 		std::thread t(&func, std::move(p), _ip, _port);
 		t.join();
-		//  DELETE THIS
-		//Sleep(1000);
+		// Sleep(1000); // Debugging
 		return f.get();
 
 	}
@@ -135,13 +137,18 @@ namespace socklib
 		return true;
 	}
 
-	bool SocketListener::ReadFile()
+	std::string SocketListener::ReadFile()
 	{
+		// Return statement
+		std::stringstream ss;
+
 		// initialize WSA
 		WSAData wsaData;
 		int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 		if (iResult != 0) {
-			std::cerr << "WSAStartup failed: " << iResult << std::endl;
+			ss << "WSAStartup failed: " << iResult << std::endl;
+			std::cerr << ss.str();
+			return ss.str();
 		}
 
 
@@ -158,24 +165,27 @@ namespace socklib
 
 		// bind the socket
 		if (bind(hSocket, (SOCKADDR*)&serverAddress, sizeof(serverAddress)) == SOCKET_ERROR) {
-			std::cerr << "Could not bind!"<< std::endl;
+			ss << "Could not bind!"<< std::endl;
+			std::cerr << ss.str();
 			closesocket(hSocket);
 			WSACleanup();
-			return false;
+			return ss.str();
 		}
 
 
 		if (listen(hSocket, 1) == SOCKET_ERROR) {
-			std::cerr << "Server Error listening." << std::endl;
+			ss << "Server Error listening." << std::endl;
+			std::cerr << ss.str();
 			closesocket(hSocket);
 			WSACleanup();
-			return false;
+			return ss.str();
 		}
 
-		std::cout << "Waiting for connection\n";
+		std::cout << "Server: Waiting for connection\n";
 		SOCKET hAccepted = SOCKET_ERROR;
 		while (hAccepted == SOCKET_ERROR) {
 			hAccepted = accept(hSocket, NULL, NULL);
+			std::cout << "Server: Connection establish" << std::endl;
 		}
 
 		Sleep(1000);
@@ -183,8 +193,11 @@ namespace socklib
 
 		FILE *f;
 		long filesize;
+
+		// Quick Check
 		if (!readlong(hAccepted, &filesize))
 			return false;
+
 		if (filesize > 0)
 		{
 			char buffer[1024];
@@ -206,12 +219,11 @@ namespace socklib
 		}
 
 
-
+		// Finished!
 		closesocket(hSocket);
 		WSACleanup();
-
-
-		return true;
+		ss << "File Sent";
+		return ss.str();
 	}
 
 }

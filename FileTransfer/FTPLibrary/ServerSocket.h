@@ -25,7 +25,7 @@ namespace socklib {
 		std::string startListening();
 
 
-		bool ReadFile();
+		std::string ReadFile();
 
 		//SOCKET getSocket();
 
