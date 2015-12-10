@@ -22,14 +22,12 @@ namespace socklib {
 		~SocketListener();
 
 		// Methods
-		std::string startListening();
+		std::string ListenForMessage();
 
-
-		std::string ReadFile();
-
-		//SOCKET getSocket();
+		std::string ListenForFile();
 
 	private:
+		// Data Members
 		SOCKET hSocket;
 		std::string _ip;
 		unsigned _port;

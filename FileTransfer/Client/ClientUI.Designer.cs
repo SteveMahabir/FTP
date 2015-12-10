@@ -94,6 +94,7 @@
             this.listExplorer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listExplorer.ForeColor = System.Drawing.Color.Lime;
             this.listExplorer.Location = new System.Drawing.Point(136, 0);
+            this.listExplorer.MultiSelect = false;
             this.listExplorer.Name = "listExplorer";
             this.listExplorer.Size = new System.Drawing.Size(435, 336);
             this.listExplorer.SmallImageList = this.imageList1;

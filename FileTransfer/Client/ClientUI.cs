@@ -38,7 +38,7 @@ namespace Client
                     _portnumber = uint.Parse(textPort.Text);
                     ClientSocket c = new ClientSocket(_ipaddress, _portnumber);
                     String returnMessage = c.SendMessage("Testing Message");
-                    MessageBox.Show("Server: " + returnMessage, "Success", MessageBoxButtons.OK);
+                    MessageBox.Show("Attempting to Send Message\nServer Response: " + returnMessage, "Send Message To Server", MessageBoxButtons.OK);
                 }
 
                 else
@@ -142,10 +142,9 @@ namespace Client
                     _ipaddress = textIp.Text;
                     _portnumber = uint.Parse(textPort.Text);
                     ClientSocket c = new ClientSocket(_ipaddress, _portnumber);
-                    FileStream fs = File.Open("test.txt", FileMode.Open);
                     
-                    c.SendFile("test.pdf");
-                    c.SendMessage("Hello!");
+                    c.SendFile("test.txt");
+
                 }
                 else
                     MessageBox.Show("Not a valid IP Address");

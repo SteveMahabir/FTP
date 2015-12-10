@@ -18,6 +18,11 @@ namespace Server
     {
         bool continueListening = false;
 
+        // Controls
+        ListView _lvExplorer;
+        Button _buttonAction;
+
+        // Socket Information
         String _ipaddress;
         uint _portnumber;
 
@@ -28,7 +33,8 @@ namespace Server
             this.treeExplorer.NodeMouseClick +=
                 new TreeNodeMouseClickEventHandler(this.treeExplorer_NodeMouseClick);
             listStatus.Items.Add(" - Server Status Log -");
-
+            _lvExplorer = listExplorer;
+            _buttonAction = buttonAction;
         }
 
         #region File Directory Browsing
@@ -107,70 +113,31 @@ namespace Server
 
         #endregion
 
-
-
-
-
+        
         private async void buttonAction_Click(object sender, EventArgs e)
         {
-            try
-            {
-                IPAddress ipadd;
-                if (IPAddress.TryParse(textIp.Text, out ipadd))
-                {
-                    _ipaddress = textIp.Text;
-                    _portnumber = uint.Parse(textPort.Text);
-                }
-                else
-                {
-                    MessageBox.Show("Not a valid IP Address");
-                    return;
-                }
-            }
-            catch (System.FormatException ex)
-            {
-                MessageBox.Show("Not a valid Port Number", ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            if (!FieldsValidated())
                 return;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Listen Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
 
             // Start to Listen Flag
             continueListening = true;
 
-            Button b = buttonAction;
-            b.Text = "Stop Listening...";
-            b.Enabled = false;
+            
+            _buttonAction.Text = "Listening...";
+            _buttonAction.ForeColor = Color.White;
+
             TextBox textIpAddress = textIp;
             textIp.Enabled = false;
             textPort.Enabled = false;
 
             listStatus.Items.Add("Server started at " + DateTime.Now.ToShortDateString());
 
-            //ServerSocket s = new ServerSocket(_ipaddress, _portnumber);
-
-            //s.RecieveFile();
-
-            //bool recieved = s.RecieveFile();
-
-            //if (recieved)
-            //    MessageBox.Show("Message Recieved!");
-            //else
-            //    MessageBox.Show("Error receiving Message");
-
-
-            //return;
-
-
-
             do
             {
                 try
                 {
-                    String returnLine = await ListenForMessages(_ipaddress, _portnumber);
+                    //String returnLine = await ListenForMessages(_ipaddress, _portnumber);
+                    String returnLine = await ListenForFile(_ipaddress, _portnumber);
                     returnLine += " at " + DateTime.Now.ToShortDateString();
                     listStatus.Items.Add(returnLine.ToString());
                 }
@@ -178,7 +145,7 @@ namespace Server
                 //ListenForMessages();
             } while (continueListening);
 
-            b.Text = "Start Listening!";
+            _buttonAction.Text = "Start Listening!";
 
         }
 
@@ -190,11 +157,55 @@ namespace Server
             (() =>
             {
                 ServerSocket s = new ServerSocket(ip, port);
-                return s.task_runner();
+                return s.RecieveMessage();
             }
             );
             t1.Start();
             return t1;
+        }
+
+        public Task<String> ListenForFile(String ip, uint port)
+        {
+
+
+            Task<String> t1 = new Task<String>
+            (() =>
+            {
+                ServerSocket s = new ServerSocket(ip, port);
+                return s.RecieveFile();
+            }
+            );
+            t1.Start();
+            return t1;
+        }
+
+        private bool FieldsValidated()
+        {
+            try
+            {
+                IPAddress ipadd;
+                if (IPAddress.TryParse(textIp.Text, out ipadd))
+                {
+                    _ipaddress = textIp.Text;
+                    _portnumber = uint.Parse(textPort.Text);
+                    return true;
+                }
+                else
+                {
+                    MessageBox.Show("Not a valid IP Address");
+                    return false;
+                }
+            }
+            catch (System.FormatException ex)
+            {
+                MessageBox.Show("Not a valid Port Number", ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
         }
 
     }

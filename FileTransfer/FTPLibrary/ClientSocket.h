@@ -14,8 +14,6 @@ using namespace std;
 
 namespace socklib {
 
-	unsigned const PORT = 70007;
-
 	class SocketSender {
 
 	public:

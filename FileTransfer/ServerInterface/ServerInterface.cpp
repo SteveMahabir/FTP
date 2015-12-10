@@ -6,8 +6,18 @@
 
 namespace ServerInterface
 {
+	// Converters
+	std::string convert(System::String^ input) {
+		msclr::interop::marshal_context context;
+		return context.marshal_as<std::string>(input);
+	}
+	System::String^ convert(std::string input) {
+		return gcnew System::String(input.c_str());
+	}
+
+
 	// This class is used for Threading the Socket Listener
-	ref class MessageListener
+	ref class TaskListener
 	{
 	private:
 		System::String^ return_message;
@@ -17,36 +27,44 @@ namespace ServerInterface
 	public:
 
 
-		MessageListener(System::String^ ip, unsigned port)
+		TaskListener(System::String^ ip, unsigned port)
 		{
 			_ip_address = ip;
 			_port = port;
 		}
 
 		//controls Thread that prints message
-		void Listen()
+		void ListenForMessages()
+		{
+			// obtain reference to currently executing thread
+			Thread^ current = Thread::CurrentThread;
+
+			Console::WriteLine(current->Name + " started");
+			socklib::SocketListener socketlistener(convert(_ip_address), _port);
+			return_message = convert(socketlistener.ListenForMessage());
+
+			Console::WriteLine(current->Name + " finished");
+
+		} // end method Print
+
+		  //controls Thread that prints message
+		void ListenForFiles()
 		{
 			// obtain reference to currently executing thread
 			Thread^ current = Thread::CurrentThread;
 
 			Console::WriteLine(current->Name + " started");
 
-			msclr::interop::marshal_context context;
-			std::string standardString = context.marshal_as<std::string>(_ip_address);
-
-			socklib::SocketListener s(standardString, _port);
-			return_message = gcnew System::String(
-
-				// Listen !!!				
-				s.startListening().c_str()
-
-				);
+			socklib::SocketListener socketlistener(convert(_ip_address), _port);
+			return_message = convert(socketlistener.ListenForFile());
 
 			Console::WriteLine(current->Name + " finished");
 
 		} // end method Print
 
-
+		System::String^ getLastMessage() {
+			return return_message;
+		}
 
 	}; // end class MessagePrinter  
 
@@ -58,21 +76,13 @@ namespace ServerInterface
 		_port = port;
 	}
 
-	// Converters
-	std::string convert(System::String^ input) {
-		msclr::interop::marshal_context context;
-		return context.marshal_as<std::string>(input);
-	}
-	System::String^ convert(std::string input) {
-		return gcnew System::String(input.c_str());
-	}
 
-	System::String^ ServerSocket::task_runner() {
+	System::String^ ServerSocket::RecieveMessage() {
 
 		// Create and name each thread. Use MessagePrinter's
 		// Print method as argument to ThreadStart delegate.
-		MessageListener^ listener = gcnew MessageListener(_ipaddress, _port);
-		Thread^ thread1 = gcnew Thread(gcnew ThreadStart(listener, &MessageListener::Listen));
+		TaskListener^ listener = gcnew TaskListener(_ipaddress, _port);
+		Thread^ thread1 = gcnew Thread(gcnew ThreadStart(listener, &TaskListener::ListenForMessages));
 		thread1->Name = "thread1";
 
 
@@ -85,15 +95,28 @@ namespace ServerInterface
 
 		thread1->Join();
 
-		return gcnew System::String("Message Recieved");
+		return listener->getLastMessage();
 	}
 
 	System::String^ ServerSocket::RecieveFile() {
 		
-		socklib::SocketListener s(convert(_ipaddress), _port);
+		// Create and name each thread. Use MessagePrinter's
+		// Print method as argument to ThreadStart delegate.
+		TaskListener^ listener = gcnew TaskListener(_ipaddress, _port);
+		Thread^ thread1 = gcnew Thread(gcnew ThreadStart(listener, &TaskListener::ListenForFiles));
+		thread1->Name = "thread1";
 
-		// Recieve File
-		return convert(s.ReadFile());
+
+		Console::WriteLine("Starting thread");
+
+		thread1->Start();
+
+		Console::WriteLine("Thread started\n");
+
+
+		thread1->Join();
+
+		return listener->getLastMessage();
 
 	}
 }
