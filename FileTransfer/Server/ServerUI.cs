@@ -26,6 +26,9 @@ namespace Server
         String _ipaddress;
         uint _portnumber;
 
+        // Current Directory
+        String _directory;
+
         public Sever()
         {
             InitializeComponent();
@@ -43,6 +46,8 @@ namespace Server
             TreeNode rootNode;
 
             DirectoryInfo info = new DirectoryInfo(@"../..");
+            _directory = info.FullName;
+            MessageBox.Show(_directory);
             if (info.Exists)
             {
                 rootNode = new TreeNode(info.Name);
@@ -85,6 +90,9 @@ namespace Server
             DirectoryInfo nodeDirInfo = (DirectoryInfo)newSelected.Tag;
             ListViewItem.ListViewSubItem[] subItems;
             ListViewItem item = null;
+            
+            // Store Current Directory
+            _directory = nodeDirInfo.FullName;
 
             foreach (DirectoryInfo dir in nodeDirInfo.GetDirectories())
             {
@@ -138,7 +146,7 @@ namespace Server
                 {
                     //String returnLine = await ListenForMessages(_ipaddress, _portnumber);
                     String returnLine = await Listen(_ipaddress, _portnumber);
-                    returnLine += " at " + DateTime.Now.ToShortDateString();
+                    returnLine += " (" + DateTime.Now.ToShortDateString() + ")";
                     listStatus.Items.Add(returnLine.ToString());
                 }
                 catch (Exception ex) { MessageBox.Show(ex.Message, "Error"); }
@@ -153,15 +161,15 @@ namespace Server
         {
 
 
-            Task<String> t1 = new Task<String>
+            Task<String> threaded_listener = new Task<String>
             (() =>
             {
-                ServerSocket s = new ServerSocket(ip, port);
+                ServerSocket s = new ServerSocket(ip, port, _directory);
                 return s.Recieve();
             }
             );
-            t1.Start();
-            return t1;
+            threaded_listener.Start();
+            return threaded_listener;
         }
 
         private bool FieldsValidated()

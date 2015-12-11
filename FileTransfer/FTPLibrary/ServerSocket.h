@@ -18,8 +18,10 @@ namespace socklib {
 	public:
 
 		// Constructors
-		SocketListener(std::string ipaddress, unsigned port);
+		SocketListener(std::string ipaddress, unsigned port, std::string save_directory);
 		~SocketListener();
+
+		void SetDirectory(std::string directory);
 
 		// Methods
 		std::string Listen();
@@ -34,6 +36,7 @@ namespace socklib {
 		SOCKET hSocket;
 		std::string _ip;
 		unsigned _port;
+		std::string _directory;
 
 	};
 

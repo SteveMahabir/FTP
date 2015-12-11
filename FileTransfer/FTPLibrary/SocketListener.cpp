@@ -11,15 +11,24 @@
 namespace socklib
 {
 	// Only Constructor
-	SocketListener::SocketListener(std::string ipaddress, unsigned port) {
+	SocketListener::SocketListener(std::string ipaddress, unsigned port, std::string save_directory) {
 		_ip = ipaddress;
 		_port = port;
+		_directory = save_directory;
 	};
 
 	SocketListener::~SocketListener() {
 		// Clean up resources here
 	}
-	// Helper Methods
+
+	// 
+	void SocketListener::SetDirectory(std::string directory) {
+		_directory = directory;
+	}
+
+
+
+	// Helper Methods used for receiving files
 
 	bool readdata(SOCKET sock, void *buf, int buflen)
 	{
@@ -57,7 +66,7 @@ namespace socklib
 
 
 	// Function Task
-	void task_listen(std::promise<std::string> && p, std::string ip, unsigned port) {
+	void task_listen(std::promise<std::string> && p, std::string ip, unsigned port, std::string directory) {
 
 		std::stringstream ss;
 
@@ -106,39 +115,44 @@ namespace socklib
 		}
 		std::cout << "Server: Client connected\n";
 
-		
+
 		// Receive Socket Identifier
 		int messageIdentifer;
 		int bytesRecv = recv(hAccepted, (char*)&messageIdentifer, 4, 0);
 		std::cout << "Server: Message Identifier Recieved [" << bytesRecv << "]: " << messageIdentifer << std::endl;
 
 
-		// Needed for Message Receival
+		// These Memebers for Message Receival - Prefer to declare outside of switch
 		char receivedMessage[32] = "";
 		int confirmationMessageSent;
 		int messageBufferSize;
 		char sendbuf[32] = "Thank you for the message!";
 
-		switch (messageIdentifer) 
+		// Choose what to listen to based on task received
+		switch (messageIdentifer)
 		{
-			case SocketListener::Type::MESSAGES:
-				std::cout << "Server: Recieved Message Transfer Request" << std::endl;
 
-				// Receive Message
-				messageBufferSize = recv(hAccepted, receivedMessage, 32, 0);
-				std::cout << "Server: Recieved Message [" << messageBufferSize << "]: " << receivedMessage << std::endl;
-			
-				// Set the return string with the message received
-				ss << receivedMessage;
 
-				// Send the Confirmation of Receival
-				confirmationMessageSent = send(hAccepted, sendbuf, strlen(sendbuf) + 1, 0);
-				std::cout << "Sent = " << confirmationMessageSent << " bytes" << std::endl;
+		case SocketListener::Type::MESSAGES:
+			std::cout << "Server: Recieved Message Transfer Request" << std::endl;
 
-				break;
+			// Receive Message
+			messageBufferSize = recv(hAccepted, receivedMessage, 32, 0);
+			std::cout << "Server: Recieved Message [" << messageBufferSize << "]: " << receivedMessage << std::endl;
+
+			// Set the return string with the message received
+			ss << receivedMessage;
+
+			// Send the Confirmation of Receival
+			confirmationMessageSent = send(hAccepted, sendbuf, strlen(sendbuf) + 1, 0);
+			std::cout << "Sent = " << confirmationMessageSent << " bytes" << std::endl;
+
+			break;
+
+
 		case SocketListener::Type::FILES:
 			std::cout << "Server: Recieved File Transfer Request" << std::endl;
-			
+
 			// Receive Filesize
 			int fsize;
 			int filesize_buffer = recv(hAccepted, (char*)& fsize, 4, 0);
@@ -152,7 +166,8 @@ namespace socklib
 
 
 			// Somewhere to put the file!
-			FILE *f = fopen(filename, "wb");
+			std::string file = directory + "\\" + filename;
+			FILE *f = fopen(file.c_str(), "wb");
 			if (f == NULL) {
 				ss << "Server: Error creating file";
 				std::cerr << ss.str() << std::endl;
@@ -229,7 +244,7 @@ namespace socklib
 	std::string SocketListener::Listen() {
 		std::promise<std::string> p;
 		auto f = p.get_future();
-		std::thread t(&task_listen, std::move(p), _ip, _port);
+		std::thread t(&task_listen, std::move(p), _ip, _port, _directory);
 		t.join();
 		// Sleep(1000); return "Finished"; // Debugging
 		return f.get();

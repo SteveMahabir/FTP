@@ -50,9 +50,9 @@
             // 
             this.buttonAction.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.buttonAction.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.buttonAction.Location = new System.Drawing.Point(0, 325);
+            this.buttonAction.Location = new System.Drawing.Point(0, 383);
             this.buttonAction.Name = "buttonAction";
-            this.buttonAction.Size = new System.Drawing.Size(718, 32);
+            this.buttonAction.Size = new System.Drawing.Size(797, 32);
             this.buttonAction.TabIndex = 0;
             this.buttonAction.Text = "Start Listening";
             this.buttonAction.UseVisualStyleBackColor = false;
@@ -68,7 +68,7 @@
             this.treeExplorer.Location = new System.Drawing.Point(0, 0);
             this.treeExplorer.Name = "treeExplorer";
             this.treeExplorer.SelectedImageIndex = 0;
-            this.treeExplorer.Size = new System.Drawing.Size(185, 325);
+            this.treeExplorer.Size = new System.Drawing.Size(185, 383);
             this.treeExplorer.TabIndex = 2;
             this.treeExplorer.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeExplorer_NodeMouseClick);
             // 
@@ -92,7 +92,7 @@
             this.listExplorer.Location = new System.Drawing.Point(185, 0);
             this.listExplorer.MultiSelect = false;
             this.listExplorer.Name = "listExplorer";
-            this.listExplorer.Size = new System.Drawing.Size(533, 325);
+            this.listExplorer.Size = new System.Drawing.Size(612, 383);
             this.listExplorer.SmallImageList = this.imageList1;
             this.listExplorer.TabIndex = 3;
             this.listExplorer.UseCompatibleStateImageBehavior = false;
@@ -116,9 +116,9 @@
             this.listStatus.Dock = System.Windows.Forms.DockStyle.Right;
             this.listStatus.ForeColor = System.Drawing.Color.Lime;
             this.listStatus.FormattingEnabled = true;
-            this.listStatus.Location = new System.Drawing.Point(503, 0);
+            this.listStatus.Location = new System.Drawing.Point(520, 0);
             this.listStatus.Name = "listStatus";
-            this.listStatus.Size = new System.Drawing.Size(215, 325);
+            this.listStatus.Size = new System.Drawing.Size(277, 383);
             this.listStatus.TabIndex = 4;
             // 
             // panelInfo
@@ -130,9 +130,9 @@
             this.panelInfo.Controls.Add(this.textPort);
             this.panelInfo.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelInfo.ForeColor = System.Drawing.Color.Lime;
-            this.panelInfo.Location = new System.Drawing.Point(185, 288);
+            this.panelInfo.Location = new System.Drawing.Point(185, 346);
             this.panelInfo.Name = "panelInfo";
-            this.panelInfo.Size = new System.Drawing.Size(318, 37);
+            this.panelInfo.Size = new System.Drawing.Size(335, 37);
             this.panelInfo.TabIndex = 5;
             // 
             // labelIp
@@ -180,7 +180,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.ClientSize = new System.Drawing.Size(718, 357);
+            this.ClientSize = new System.Drawing.Size(797, 415);
             this.Controls.Add(this.panelInfo);
             this.Controls.Add(this.listStatus);
             this.Controls.Add(this.listExplorer);

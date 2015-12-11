@@ -162,7 +162,7 @@ namespace Client
                 else
                     MessageBox.Show("Not a valid IP Address");
 
-                MessageBox.Show("File Sent!", "Success", MessageBoxButtons.OK);
+                MessageBox.Show("File has been sent to the server", "Success", MessageBoxButtons.OK);
             }
             catch (System.FormatException ex)
             {
