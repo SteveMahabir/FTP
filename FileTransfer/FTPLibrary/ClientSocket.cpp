@@ -89,17 +89,17 @@ namespace socklib
 
 
 		// Send the message idenfier
-		int type = Type::MESSAGES;
-		int identifierBytesSent = send(hSocket, (char*)&type, sizeof(type), 0);
+		size_t type = Type::MESSAGES;
+		size_t identifierBytesSent = send(hSocket, (char*)&type, sizeof(type), 0);
 		
 		// Send the Message
 		const char* messagebuff = message.c_str();
-		int messageBytesSent = send(hSocket, messagebuff, strlen(messagebuff) + 1, 0);
+		size_t messageBytesSent = send(hSocket, messagebuff, strlen(messagebuff) + 1, 0);
 		cout << "Client Sent = " << messageBytesSent << " bytes" << endl;
 
 		// Receive the Confirmation
 		char recvbuf[32] = "";
-		int bytesRecv = recv(hSocket, recvbuf, 32, 0);
+		size_t bytesRecv = recv(hSocket, recvbuf, 32, 0);
 		cout << "Client Recv = " << bytesRecv << ": " << recvbuf << endl;
 
 		ss << recvbuf;
