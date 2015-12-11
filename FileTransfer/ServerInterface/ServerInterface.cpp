@@ -1,4 +1,12 @@
-// This is the main DLL file.
+/*
+ServerInterface.cpp
+
+Implements the Server Interface for the C# application
+
+Steve Mahabir and Kevin Postma
+
+11/Dec/2015
+*/
 
 #include "stdafx.h"
 
@@ -11,6 +19,8 @@ namespace ServerInterface
 		msclr::interop::marshal_context context;
 		return context.marshal_as<std::string>(input);
 	}
+	
+	// Converters (Overloaded)
 	System::String^ convert(std::string input) {
 		return gcnew System::String(input.c_str());
 	}
@@ -24,10 +34,10 @@ namespace ServerInterface
 		System::String^ _ip_address;
 		unsigned _port;
 		System::String^ _save_directory;
-		// constructor to initialize a MessagePrinter object
+
 	public:
 
-
+		// Constructor
 		TaskListener(System::String^ ip, unsigned port, System::String^ save_directory)
 		{
 			_ip_address = ip;
@@ -50,6 +60,7 @@ namespace ServerInterface
 
 		} // end method Print
 
+		// Returns the last message from the Library
 		System::String^ getLastMessage() {
 			return return_message;
 		}
@@ -58,14 +69,14 @@ namespace ServerInterface
 
 
 
-
+	// Constructor
 	ServerSocket::ServerSocket(System::String^ ip, unsigned port, System::String^ save_directory) {
 		_ipaddress = ip;
 		_port = port;
 		_directory = save_directory;
 	}
 
-
+	// The main method for listening to receiving the message
 	System::String^ ServerSocket::Recieve() {
 
 		// Create and name each thread. Use MessagePrinter's
@@ -76,7 +87,8 @@ namespace ServerInterface
 
 
 		Console::WriteLine("Starting ThreadListener");
-
+		
+		// Log and start the Thread!
 		thread1->Start();
 
 		Console::WriteLine("ThreadListener started\n");

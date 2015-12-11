@@ -13,22 +13,28 @@ using System.Net;
 
 namespace Client
 {
+    // Main Client UI
     public partial class ClientUI : Form
     {
+        // Data Members
         String _ipaddress;
         uint _portnumber;
         String _file;
         String _directory;
 
+        // Constructor
         public ClientUI()
         {
             InitializeComponent();
+
+            // Populate the Explorer
             PopulateTreeView();
             this.treeExplorer.NodeMouseClick +=
                 new TreeNodeMouseClickEventHandler(this.treeExplorer_NodeMouseClick);
             _file = "";
         }
-    
+   
+        // Send a Message to the Server!
         private void buttonSend_Click(object sender, EventArgs e)
         {
 
@@ -51,8 +57,6 @@ namespace Client
                 else
                     MessageBox.Show("Not a valid IP Address");
 
-                
-                //MessageBox.Show("Message Sent!", "Success", MessageBoxButtons.OK);
             }
             catch(System.FormatException ex)
             {
@@ -64,6 +68,7 @@ namespace Client
             
         }
 
+        // This region is used to handle the File Directory section
         #region File Directory Browsing
         private void PopulateTreeView()
         {
@@ -139,6 +144,8 @@ namespace Client
         }
         #endregion
 
+
+        // Send a File to the Server!
         private void buttonSendFile_Click(object sender, EventArgs e)
         {
             try
@@ -174,6 +181,7 @@ namespace Client
             }
         }
 
+        // List Explorer Handle, used to get the Filename and Path to send to the Library
         private void listExplorer_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (listExplorer.SelectedIndices.Count <= 0)

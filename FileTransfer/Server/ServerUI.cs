@@ -13,9 +13,10 @@ using System.Net;
 
 namespace Server
 {
-
+    // Server UI
     public partial class Sever : Form
     {
+        // Data Members
         static bool continueListening = false;
 
         // Controls
@@ -29,9 +30,12 @@ namespace Server
         // Current Directory
         String _directory;
 
+        // Default Constructor
         public Sever()
         {
             InitializeComponent();
+
+            // Initialize the File Explorer
             PopulateTreeView();
             this.treeExplorer.NodeMouseClick +=
                 new TreeNodeMouseClickEventHandler(this.treeExplorer_NodeMouseClick);
@@ -40,6 +44,7 @@ namespace Server
             _buttonAction = buttonAction;
         }
 
+        // This region is used for File Exploring
         #region File Directory Browsing
         private void PopulateTreeView()
         {
@@ -120,15 +125,18 @@ namespace Server
         }
 
         #endregion
-
         
+
+        // This is used for starting the Main Listener on the Server
         private async void buttonAction_Click(object sender, EventArgs e)
         {
             if (continueListening)
             {
                 continueListening = false;
                 listStatus.Items.Add("Server stopped at " + DateTime.Now.ToShortDateString());
-                _buttonAction.Text = "Start Listening";
+                _buttonAction.Text = "Shutting down Server";
+                MessageBox.Show("Thank you for using our program!", "Shutting Down");
+                this.Close();
                 return;
             }
 
@@ -139,7 +147,7 @@ namespace Server
             continueListening = true;
 
             
-            _buttonAction.Text = "Currently Listening... (Click here to stop)";
+            _buttonAction.Text = "Currently Listening... (Click here to stop and close program)";
 
             TextBox textIpAddress = textIp;
             textIp.Enabled = false;
@@ -164,10 +172,11 @@ namespace Server
 
         }
 
+
+        // Threaded task, this ensures we can still use this application ASYNC meaning it wont block any input
         public Task<String> Listen(String ip, uint port)
         {
-
-
+            
             Task<String> threaded_listener = new Task<String>
             (() =>
             {
@@ -179,6 +188,7 @@ namespace Server
             return threaded_listener;
         }
 
+        // Ensures all the Fields are validated before hitting the library
         private bool FieldsValidated()
         {
             try

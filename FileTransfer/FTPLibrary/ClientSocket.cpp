@@ -1,7 +1,13 @@
-// Socket.cpp
-// compile with: cl /c /EHsc MathFuncsLib.cpp
-// post-build command: lib MathFuncsLib.obj
+/*
+	ClientSocket.cpp 
 
+	Implementation of the Client.
+	Since this is a library users should never see this code
+
+	Steve Mahabir and Kevin Postma
+
+	11/Dec/2015
+*/
 #include "ClientSocket.h"
 
 #include <stdexcept>

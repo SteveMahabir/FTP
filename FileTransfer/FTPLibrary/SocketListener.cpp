@@ -1,11 +1,18 @@
-// ServerSocket.cpp
+/*
+	SocketListener.cpp
+
+	Implementation of the Server.
+	Since this is a library users should never see this code
+
+	Steve Mahabir and Kevin Postma
+
+	11/Dec/2015
+*/
 
 #include "ServerSocket.h"
 
 #include <thread>
 #include <future>
-
-
 #include <sstream>
 
 namespace socklib
@@ -19,17 +26,11 @@ namespace socklib
 
 	SocketListener::~SocketListener() {
 		// Clean up resources here
+		closesocket(hSocket);
+		WSACleanup();
 	}
-
-	// 
-	void SocketListener::SetDirectory(std::string directory) {
-		_directory = directory;
-	}
-
-
-
-	// Helper Methods used for receiving files
-
+	
+	// Reads a pre-determined amount of file information
 	bool readdata(SOCKET sock, void *buf, int buflen)
 	{
 		char *pbuf = (char *)buf;
@@ -56,6 +57,7 @@ namespace socklib
 		return true;
 	}
 
+	// Calls Read Data for reading a pre-determined amount of file information to the buffer
 	bool readlong(SOCKET sock, long *value)
 	{
 		if (!readdata(sock, value, sizeof(value)))
@@ -65,9 +67,10 @@ namespace socklib
 	}
 
 
-	// Function Task
+	// Function Task - Task that is threaded to ensure ASYNC calls
 	void task_listen(std::promise<std::string> && p, std::string ip, unsigned port, std::string directory) {
 
+		// Return Value
 		std::stringstream ss;
 
 		// initialize WSA
@@ -99,7 +102,7 @@ namespace socklib
 			return;
 		}
 
-
+		// Listen for Client connection
 		if (listen(hSocket, 1) == SOCKET_ERROR) {
 			closesocket(hSocket);
 			WSACleanup();
@@ -109,6 +112,7 @@ namespace socklib
 
 		std::cout << "Server: Waiting for connection\n";
 
+		//  Accept the Connection
 		SOCKET hAccepted = SOCKET_ERROR;
 		while (hAccepted == SOCKET_ERROR) {
 			hAccepted = accept(hSocket, NULL, NULL);
@@ -132,7 +136,7 @@ namespace socklib
 		switch (messageIdentifer)
 		{
 
-
+			// Message Found
 		case SocketListener::Type::MESSAGES:
 			std::cout << "Server: Recieved Message Transfer Request" << std::endl;
 
@@ -149,7 +153,7 @@ namespace socklib
 
 			break;
 
-
+			// File Found
 		case SocketListener::Type::FILES:
 			std::cout << "Server: Recieved File Transfer Request" << std::endl;
 
@@ -185,6 +189,7 @@ namespace socklib
 			}
 			std::cout << "Server: ReadLong successful" << std::endl;
 
+			// File size is greater than 0
 			if (filesize > 0)
 			{
 				std::cout << "Server: filesize > 0" << std::endl;
@@ -192,9 +197,11 @@ namespace socklib
 
 				do
 				{
+					// Validate and prepare for filesize
 					int num = min(filesize, sizeof(buffer));
 					std::cout << "Server: FileSize = " << num << std::endl;
 
+					// Start getting the first set of data
 					if (!readdata(hAccepted, buffer, num)) {
 						ss << "Server: Error reading file";
 						std::cerr << ss.str() << std::endl;
@@ -205,7 +212,7 @@ namespace socklib
 					int offset = 0;
 					do
 					{
-
+						// Start receiving a bit of data at a time
 						size_t written = fwrite(&buffer[offset], 1, num - offset, f);
 						std::cout << "Server: File Writing to Buffer - " << offset << std::endl;
 						if (written < 1) {
@@ -217,17 +224,20 @@ namespace socklib
 						offset += written;
 
 					} while (offset < num);
-
+					
+					// Finished
 					std::cout << "Server: Finished writing to buffer" << std::endl;
 					filesize -= num;
 				} while (filesize > 0);
 
+				// Close
 				fclose(f);
 				std::cout << "Server: File finished writing to buffer" << std::endl;
 			}
 			else
 				std::cout << "Server: Empty File" << std::endl;
-
+			
+			// Return File
 			ss << "File Recieved!";
 			break;
 		}
@@ -241,6 +251,7 @@ namespace socklib
 	}
 
 
+	// Threaded Task Listener
 	std::string SocketListener::Listen() {
 		std::promise<std::string> p;
 		auto f = p.get_future();
