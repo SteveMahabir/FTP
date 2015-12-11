@@ -50,6 +50,7 @@
             // 
             this.buttonAction.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.buttonAction.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.buttonAction.ForeColor = System.Drawing.Color.Lime;
             this.buttonAction.Location = new System.Drawing.Point(0, 383);
             this.buttonAction.Name = "buttonAction";
             this.buttonAction.Size = new System.Drawing.Size(797, 32);

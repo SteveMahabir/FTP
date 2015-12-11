@@ -16,7 +16,7 @@ namespace Server
 
     public partial class Sever : Form
     {
-        bool continueListening = false;
+        static bool continueListening = false;
 
         // Controls
         ListView _lvExplorer;
@@ -47,7 +47,7 @@ namespace Server
 
             DirectoryInfo info = new DirectoryInfo(@"../..");
             _directory = info.FullName;
-            MessageBox.Show(_directory);
+            
             if (info.Exists)
             {
                 rootNode = new TreeNode(info.Name);
@@ -124,6 +124,14 @@ namespace Server
         
         private async void buttonAction_Click(object sender, EventArgs e)
         {
+            if (continueListening)
+            {
+                continueListening = false;
+                listStatus.Items.Add("Server stopped at " + DateTime.Now.ToShortDateString());
+                _buttonAction.Text = "Start Listening";
+                return;
+            }
+
             if (!FieldsValidated())
                 return;
 
@@ -131,8 +139,7 @@ namespace Server
             continueListening = true;
 
             
-            _buttonAction.Text = "Listening...";
-            _buttonAction.ForeColor = Color.White;
+            _buttonAction.Text = "Currently Listening... (Click here to stop)";
 
             TextBox textIpAddress = textIp;
             textIp.Enabled = false;
@@ -146,7 +153,7 @@ namespace Server
                 {
                     //String returnLine = await ListenForMessages(_ipaddress, _portnumber);
                     String returnLine = await Listen(_ipaddress, _portnumber);
-                    returnLine += " (" + DateTime.Now.ToShortDateString() + ")";
+                    returnLine += " (from a client @ " + DateTime.Now.ToShortDateString() + ")";
                     listStatus.Items.Add(returnLine.ToString());
                 }
                 catch (Exception ex) { MessageBox.Show(ex.Message, "Error"); }
