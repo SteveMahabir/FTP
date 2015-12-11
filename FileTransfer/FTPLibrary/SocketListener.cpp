@@ -113,6 +113,7 @@ namespace socklib
 		std::cout << "Server: Message Identifier Recieved [" << bytesRecv << "]: " << messageIdentifer << std::endl;
 
 
+		// Needed for Message Receival
 		char receivedMessage[32] = "";
 		int confirmationMessageSent;
 		int messageBufferSize;
@@ -121,6 +122,7 @@ namespace socklib
 		switch (messageIdentifer) 
 		{
 			case SocketListener::Type::MESSAGES:
+				std::cout << "Server: Recieved Message Transfer Request" << std::endl;
 
 				// Receive Message
 				messageBufferSize = recv(hAccepted, receivedMessage, 32, 0);
@@ -135,8 +137,22 @@ namespace socklib
 
 				break;
 		case SocketListener::Type::FILES:
+			std::cout << "Server: Recieved File Transfer Request" << std::endl;
+			
+			// Receive Filesize
+			int fsize;
+			int filesize_buffer = recv(hAccepted, (char*)& fsize, 4, 0);
+			std::cout << "Server: Recieved Filename Size [" << filesize_buffer << "]: " << fsize << std::endl;
+
+			// Receive Message
+			char* filename = new char[fsize + 1];
+			int filename_buffer = recv(hAccepted, filename, fsize + 1, 0);
+			std::cout << "Server: Recieved Filename [" << filename_buffer << "]: " << filename << std::endl;
+
+
+
 			// Somewhere to put the file!
-			FILE *f = fopen("test.txt", "wb");
+			FILE *f = fopen(filename, "wb");
 			if (f == NULL) {
 				ss << "Server: Error creating file";
 				std::cerr << ss.str() << std::endl;
@@ -191,6 +207,7 @@ namespace socklib
 					filesize -= num;
 				} while (filesize > 0);
 
+				fclose(f);
 				std::cout << "Server: File finished writing to buffer" << std::endl;
 			}
 			else

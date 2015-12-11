@@ -17,16 +17,18 @@ namespace Client
     {
         String _ipaddress;
         uint _portnumber;
+        String _file;
+        String _directory;
 
         public ClientUI()
         {
             InitializeComponent();
             PopulateTreeView();
             this.treeExplorer.NodeMouseClick +=
-    new TreeNodeMouseClickEventHandler(this.treeExplorer_NodeMouseClick);
+                new TreeNodeMouseClickEventHandler(this.treeExplorer_NodeMouseClick);
+            _file = "";
         }
     
-
         private void buttonSend_Click(object sender, EventArgs e)
         {
 
@@ -38,8 +40,12 @@ namespace Client
                     _ipaddress = textIp.Text;
                     _portnumber = uint.Parse(textPort.Text);
                     ClientSocket c = new ClientSocket(_ipaddress, _portnumber);
-                    String returnMessage = c.SendMessage("Testing Message");
-                    MessageBox.Show("Attempting to Send Message\nServer Response: " + returnMessage, "Send Message To Server", MessageBoxButtons.OK);
+                    if(textBoxMessage.Text.Length != 0) { 
+                        String returnMessage = c.SendMessage(textBoxMessage.Text);
+                        MessageBox.Show("Attempting to Send Message\nServer Response: " + returnMessage, "Send Message To Server", MessageBoxButtons.OK);
+                    }
+                    else
+                        MessageBox.Show("Please enter some text to send", "Warning", MessageBoxButtons.OK);
                 }
 
                 else
@@ -57,7 +63,6 @@ namespace Client
             }          
             
         }
-
 
         #region File Directory Browsing
         private void PopulateTreeView()
@@ -119,6 +124,7 @@ namespace Client
             }
             foreach (FileInfo file in nodeDirInfo.GetFiles())
             {
+                _directory = file.Directory.ToString();
                 item = new ListViewItem(file.Name, 1);
                 subItems = new ListViewItem.ListViewSubItem[]
                           { new ListViewItem.ListViewSubItem(item, "File"),
@@ -144,13 +150,19 @@ namespace Client
                     _portnumber = uint.Parse(textPort.Text);
                     ClientSocket c = new ClientSocket(_ipaddress, _portnumber);
                     
-                    c.SendFile("test.txt");
+                    if(_file.Length == 0)
+                    {
+                        MessageBox.Show("Please select a file to send first");
+                        return;
+                    }
+
+                    c.SendFile(_directory + "\\" + _file, _file);
 
                 }
                 else
                     MessageBox.Show("Not a valid IP Address");
 
-                MessageBox.Show("Message Sent!", "Success", MessageBoxButtons.OK);
+                MessageBox.Show("File Sent!", "Success", MessageBoxButtons.OK);
             }
             catch (System.FormatException ex)
             {
@@ -159,6 +171,20 @@ namespace Client
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Send Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void listExplorer_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listExplorer.SelectedIndices.Count <= 0)
+            {
+                return;
+            }
+            int intselectedindex = listExplorer.SelectedIndices[0];
+            if (intselectedindex >= 0)
+            {
+                String text = listExplorer.Items[intselectedindex].Text;
+                _file = text;
             }
         }
     }

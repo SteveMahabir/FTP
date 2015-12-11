@@ -138,8 +138,10 @@ namespace socklib
 		return senddata(sock, &value, sizeof(value));
 	}
 
-	bool SocketSender::SendFile(std::string filename)
+	bool SocketSender::SendFile(std::string path, std::string filename)
 	{
+		std::cout << "Path = " << path << endl;
+		std::cout << "Filename = " << filename << std::endl;
 		// initialize WSA
 		int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 		if (iResult != 0) {
@@ -166,9 +168,20 @@ namespace socklib
 		// Send the File Identifer
 		int type = Type::FILES;
 		int bytesSent = send(hSocket, (char*)&type, sizeof(type), 0);
+		cout << "Client: FileIdentifier sent = " << bytesSent << " bytes" << endl;
+
+		// Send the File Name Length
+		int filename_length = strlen(filename.c_str());
+		int filename_length_buffer_sent = send(hSocket, (char*)& filename_length, 4, 0);
+		cout << "Client: Type::Filename length sent = " << filename_length_buffer_sent << " bytes" << endl;
+
+		// Send the File Name
+		const char* filename_buffer = filename.c_str();
+		int filename_buffer_sent = send(hSocket, filename_buffer, strlen(filename_buffer) + 1, 0);
+		cout << "Client: Filename Sent = " << filename_buffer_sent << " bytes" << endl;
 
 		FILE* f;
-		f = fopen(filename.c_str(), "rb");
+		f = fopen(path.c_str(), "rb");
 
 		fseek(f, 0, SEEK_END);
 		long filesize = ftell(f);

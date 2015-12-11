@@ -37,31 +37,33 @@
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.buttonSendFile = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.labelIp = new System.Windows.Forms.Label();
             this.textIp = new System.Windows.Forms.TextBox();
             this.labelPort = new System.Windows.Forms.Label();
             this.textPort = new System.Windows.Forms.TextBox();
-            this.flowLayoutPanel1.SuspendLayout();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.buttonSendFile = new System.Windows.Forms.Button();
+            this.textBoxMessage = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonSend
             // 
             this.buttonSend.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.buttonSend.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.buttonSend.ForeColor = System.Drawing.Color.Lime;
             this.buttonSend.Location = new System.Drawing.Point(0, 336);
             this.buttonSend.Margin = new System.Windows.Forms.Padding(5);
             this.buttonSend.Name = "buttonSend";
             this.buttonSend.Padding = new System.Windows.Forms.Padding(5);
             this.buttonSend.Size = new System.Drawing.Size(571, 35);
             this.buttonSend.TabIndex = 0;
-            this.buttonSend.Text = "Send Message";
+            this.buttonSend.Text = "Send File";
             this.buttonSend.UseVisualStyleBackColor = false;
-            this.buttonSend.Click += new System.EventHandler(this.buttonSend_Click);
+            this.buttonSend.Click += new System.EventHandler(this.buttonSendFile_Click);
             // 
             // treeExplorer
             // 
@@ -101,6 +103,7 @@
             this.listExplorer.TabIndex = 2;
             this.listExplorer.UseCompatibleStateImageBehavior = false;
             this.listExplorer.View = System.Windows.Forms.View.Details;
+            this.listExplorer.SelectedIndexChanged += new System.EventHandler(this.listExplorer_SelectedIndexChanged);
             // 
             // columnHeader1
             // 
@@ -114,39 +117,6 @@
             // 
             this.columnHeader3.Text = "Last Modified";
             // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.Controls.Add(this.buttonSendFile);
-            this.flowLayoutPanel1.Controls.Add(this.button2);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(457, 0);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(114, 336);
-            this.flowLayoutPanel1.TabIndex = 3;
-            // 
-            // buttonSendFile
-            // 
-            this.buttonSendFile.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.buttonSendFile.ForeColor = System.Drawing.Color.Lime;
-            this.buttonSendFile.Location = new System.Drawing.Point(3, 3);
-            this.buttonSendFile.Name = "buttonSendFile";
-            this.buttonSendFile.Size = new System.Drawing.Size(111, 23);
-            this.buttonSendFile.TabIndex = 0;
-            this.buttonSendFile.Text = "Send File";
-            this.buttonSendFile.UseVisualStyleBackColor = false;
-            this.buttonSendFile.Click += new System.EventHandler(this.buttonSendFile_Click);
-            // 
-            // button2
-            // 
-            this.button2.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.button2.ForeColor = System.Drawing.Color.Lime;
-            this.button2.Location = new System.Drawing.Point(3, 32);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(111, 23);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Get File";
-            this.button2.UseVisualStyleBackColor = false;
-            // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.Black;
@@ -158,7 +128,7 @@
             this.panel1.ForeColor = System.Drawing.Color.Lime;
             this.panel1.Location = new System.Drawing.Point(136, 302);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(321, 34);
+            this.panel1.Size = new System.Drawing.Size(435, 34);
             this.panel1.TabIndex = 4;
             // 
             // labelIp
@@ -201,23 +171,69 @@
             this.textPort.Text = "70007";
             this.textPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.label1);
+            this.panel2.Controls.Add(this.textBoxMessage);
+            this.panel2.Controls.Add(this.buttonSendFile);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel2.Location = new System.Drawing.Point(136, 268);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(435, 34);
+            this.panel2.TabIndex = 5;
+            // 
+            // buttonSendFile
+            // 
+            this.buttonSendFile.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.buttonSendFile.ForeColor = System.Drawing.Color.Lime;
+            this.buttonSendFile.Location = new System.Drawing.Point(0, -1);
+            this.buttonSendFile.Margin = new System.Windows.Forms.Padding(5);
+            this.buttonSendFile.Name = "buttonSendFile";
+            this.buttonSendFile.Padding = new System.Windows.Forms.Padding(5);
+            this.buttonSendFile.Size = new System.Drawing.Size(175, 33);
+            this.buttonSendFile.TabIndex = 6;
+            this.buttonSendFile.Text = "Send Message";
+            this.buttonSendFile.UseVisualStyleBackColor = false;
+            this.buttonSendFile.Click += new System.EventHandler(this.buttonSend_Click);
+            // 
+            // textBoxMessage
+            // 
+            this.textBoxMessage.BackColor = System.Drawing.Color.Black;
+            this.textBoxMessage.ForeColor = System.Drawing.Color.Lime;
+            this.textBoxMessage.Location = new System.Drawing.Point(266, 8);
+            this.textBoxMessage.Name = "textBoxMessage";
+            this.textBoxMessage.Size = new System.Drawing.Size(166, 20);
+            this.textBoxMessage.TabIndex = 12;
+            this.textBoxMessage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.ForeColor = System.Drawing.Color.Lime;
+            this.label1.Location = new System.Drawing.Point(183, 11);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(77, 13);
+            this.label1.TabIndex = 12;
+            this.label1.Text = "Message Text:";
+            // 
             // ClientUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.ClientSize = new System.Drawing.Size(571, 371);
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.listExplorer);
             this.Controls.Add(this.treeExplorer);
             this.Controls.Add(this.buttonSend);
             this.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.Name = "ClientUI";
             this.Text = "ClientUI";
-            this.flowLayoutPanel1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -227,9 +243,6 @@
         private System.Windows.Forms.Button buttonSend;
         private System.Windows.Forms.TreeView treeExplorer;
         private System.Windows.Forms.ListView listExplorer;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.Button buttonSendFile;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
@@ -239,5 +252,9 @@
         private System.Windows.Forms.TextBox textIp;
         private System.Windows.Forms.Label labelPort;
         private System.Windows.Forms.TextBox textPort;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.TextBox textBoxMessage;
+        private System.Windows.Forms.Button buttonSendFile;
+        private System.Windows.Forms.Label label1;
     }
 }

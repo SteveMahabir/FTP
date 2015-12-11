@@ -32,11 +32,11 @@ namespace ClientInterface
 		return convert(s.sendMessage(convert(message)).c_str());
 	}
 
-	bool ClientSocket::SendFile(System::String^ filename) {
+	bool ClientSocket::SendFile(System::String^ path, System::String^ filename) {
 
 		socklib::SocketSender s(convert(_ipaddress), _port);
 
-		return s.SendFile(convert(filename));
+		return s.SendFile(convert(path),convert(filename));
 
 
 	};

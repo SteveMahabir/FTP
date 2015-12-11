@@ -22,7 +22,7 @@ namespace socklib {
 
 		std::string sendMessage(std::string message);
 
-		bool SendFile(std::string filename);
+		bool SendFile(std::string path, std::string filename);
 
 		SOCKET getSocket();
 

@@ -21,6 +21,6 @@ namespace ClientInterface {
 
 		System::String^ SendMessage(System::String^ message);
 		
-		bool SendFile(System::String^ ip);
+		bool SendFile(System::String^ path, System::String^ filename );
 	};
 }
