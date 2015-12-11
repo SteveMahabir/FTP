@@ -1,9 +1,9 @@
 #pragma once
 
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
 
 #include <iostream>
-
 #include <string>
 
 // Needed for Sockets
@@ -25,6 +25,11 @@ namespace socklib {
 		bool SendFile(std::string filename);
 
 		SOCKET getSocket();
+
+		enum Type {
+			MESSAGES,
+			FILES
+		};
 
 	private:
 

@@ -71,7 +71,6 @@ namespace socklib
 		}
 
 		// Create the TCP socket
-		//SOCKET hSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 		SOCKET hSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
 		// Create the server address
@@ -88,29 +87,24 @@ namespace socklib
 			return ss.str();
 		}
 
-		char sendbuf[32] = "Hello"; // message;
+
+		// Send the message idenfier
+		int type = Type::MESSAGES;
+		int identifierBytesSent = send(hSocket, (char*)&type, sizeof(type), 0);
+		
+		// Send the Message
 		const char* messagebuff = message.c_str();
+		int messageBytesSent = send(hSocket, messagebuff, strlen(messagebuff) + 1, 0);
+		cout << "Client Sent = " << messageBytesSent << " bytes" << endl;
 
+		// Receive the Confirmation
 		char recvbuf[32] = "";
-		
-		
-		int bytesSent = send(hSocket, messagebuff, strlen(messagebuff) + 1, 0);
-
-
-		//int bytesSent = send(hSocket, sendbuf, strlen(sendbuf) + 1, 0);
-		cout << "Client Sent = " << bytesSent << " bytes" << endl;
-
 		int bytesRecv = recv(hSocket, recvbuf, 32, 0);
 		cout << "Client Recv = " << bytesRecv << ": " << recvbuf << endl;
 
-		int i = 42;
-		send(hSocket, (char*)&i, sizeof(i), 0);
-
-		
 		ss << recvbuf;
 
 		return ss.str();
-
 	}
 
 
@@ -168,6 +162,10 @@ namespace socklib
 			Disconnect();
 			return false;
 		}
+
+		// Send the File Identifer
+		int type = Type::FILES;
+		int bytesSent = send(hSocket, (char*)&type, sizeof(type), 0);
 
 		FILE* f;
 		f = fopen(filename.c_str(), "rb");

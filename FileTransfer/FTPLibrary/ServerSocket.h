@@ -1,9 +1,9 @@
 #pragma once
 
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
 
 #include <iostream>
-
 #include <string>
 
 // Needed for Sockets
@@ -22,9 +22,12 @@ namespace socklib {
 		~SocketListener();
 
 		// Methods
-		std::string ListenForMessage();
+		std::string Listen();
 
-		std::string ListenForFile();
+		enum Type {
+			MESSAGES,
+			FILES
+		};
 
 	private:
 		// Data Members

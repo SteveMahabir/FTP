@@ -57,15 +57,15 @@ namespace socklib
 
 
 	// Function Task
-	void task_MessageListener(std::promise<std::string> && p, std::string ip, unsigned port) {
-		
+	void task_listen(std::promise<std::string> && p, std::string ip, unsigned port) {
+
 		std::stringstream ss;
 
 		// initialize WSA
 		WSAData wsaData;
 		int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 		if (iResult != 0) {
-			ss << "WSAStartup failed: " << iResult << std::endl;
+			ss << "Server: WSAStartup failed: " << iResult << std::endl;
 			std::cerr << ss.str();
 			p.set_value(ss.str());
 			return;
@@ -82,15 +82,11 @@ namespace socklib
 		serverAddress.sin_port = htons(port);
 		serverAddress.sin_addr.s_addr = inet_addr(ip.c_str());
 
-		// HARD CODED
-		//serverAddress.sin_port = htons(PORT);
-		//serverAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
-
 		// bind the socket
 		if (bind(hSocket, (SOCKADDR*)&serverAddress, sizeof(serverAddress)) == SOCKET_ERROR) {
 			closesocket(hSocket);
 			WSACleanup();
-			p.set_value("Bind Failed");
+			p.set_value("Server: Bind Failed");
 			return;
 		}
 
@@ -98,103 +94,64 @@ namespace socklib
 		if (listen(hSocket, 1) == SOCKET_ERROR) {
 			closesocket(hSocket);
 			WSACleanup();
-			p.set_value("Error listening on socket");
+			p.set_value("Server: Error listening on socket");
 			return;
 		}
 
-		std::cout << "Waiting for connection\n";
+		std::cout << "Server: Waiting for connection\n";
+
 		SOCKET hAccepted = SOCKET_ERROR;
 		while (hAccepted == SOCKET_ERROR) {
 			hAccepted = accept(hSocket, NULL, NULL);
 		}
-		std::cout << "Client connected\n";
+		std::cout << "Server: Client connected\n";
 
-		int bytesSent;
+		
+		// Receive Socket Identifier
+		int messageIdentifer;
+		int bytesRecv = recv(hAccepted, (char*)&messageIdentifer, 4, 0);
+		std::cout << "Server: Message Identifier Recieved [" << bytesRecv << "]: " << messageIdentifer << std::endl;
+
+
+		char receivedMessage[32] = "";
+		int confirmationMessageSent;
+		int messageBufferSize;
 		char sendbuf[32] = "Thank you for the message!";
-		char recvbuf[32] = "";
 
-		int bytesRecv = recv(hAccepted, recvbuf, 32, 0);
-		std::cout << "Recv = " << bytesRecv << ": " << recvbuf << std::endl;
-
-		bytesSent = send(hAccepted, sendbuf, strlen(sendbuf) + 1, 0);
-		std::cout << "Sent = " << bytesSent << " bytes" << std::endl;
-
-		// Return Value
-		ss << recvbuf;
-		p.set_value(ss.str());
-
-		// Clean up
-		closesocket(hSocket);
-		WSACleanup();
-	}
-
-	// Function Task
-	std::string task_FileListener(std::promise<std::string> && p, std::string ip, unsigned port)
-	{
-		try
+		switch (messageIdentifer) 
 		{
-			// Return statement
-			std::stringstream ss;
+			case SocketListener::Type::MESSAGES:
 
-			// initialize WSA
-			WSAData wsaData;
-			int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-			if (iResult != 0) {
-				ss << "WSAStartup failed: " << iResult << std::endl;
-				std::cerr << ss.str();
-				p.set_value(ss.str());
-			}
+				// Receive Message
+				messageBufferSize = recv(hAccepted, receivedMessage, 32, 0);
+				std::cout << "Server: Recieved Message [" << messageBufferSize << "]: " << receivedMessage << std::endl;
+			
+				// Set the return string with the message received
+				ss << receivedMessage;
 
+				// Send the Confirmation of Receival
+				confirmationMessageSent = send(hAccepted, sendbuf, strlen(sendbuf) + 1, 0);
+				std::cout << "Sent = " << confirmationMessageSent << " bytes" << std::endl;
 
-			// Create the TCP socket
-			SOCKET hSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-
-			// Create the server address
-			sockaddr_in serverAddress = { 0 };
-			serverAddress.sin_family = AF_INET;
-			// Custom Ip and Port!
-			serverAddress.sin_port = htons(port);
-			serverAddress.sin_addr.s_addr = inet_addr(ip.c_str());
-
-
-			// bind the socket
-			if (bind(hSocket, (SOCKADDR*)&serverAddress, sizeof(serverAddress)) == SOCKET_ERROR) {
-				ss << "Could not bind!" << std::endl;
-				std::cerr << ss.str();
-				closesocket(hSocket);
-				WSACleanup();
-				p.set_value(ss.str());
-				return ss.str();
-			}
-
-
-			if (listen(hSocket, 1) == SOCKET_ERROR) {
-				ss << "Server Error listening." << std::endl;
-				std::cerr << ss.str();
-				closesocket(hSocket);
-				WSACleanup();
-				p.set_value(ss.str());
-				return ss.str();
-			}
-
-			std::cout << "Server: Waiting for connection\n";
-			SOCKET hAccepted = SOCKET_ERROR;
-			while (hAccepted == SOCKET_ERROR) {
-				hAccepted = accept(hSocket, NULL, NULL);
-				std::cout << "Server: Connection establish" << std::endl;
-			}
-
-
+				break;
+		case SocketListener::Type::FILES:
 			// Somewhere to put the file!
 			FILE *f = fopen("test.txt", "wb");
-			if (f == NULL)
-				return "Server: Error creating file";
+			if (f == NULL) {
+				ss << "Server: Error creating file";
+				std::cerr << ss.str() << std::endl;
+				p.set_value(ss.str());
+				return;
+			}
 
 			// Quick Check
 			long filesize;
-			if (!readlong(hAccepted, &filesize))
-				return ss.str();
-
+			if (!readlong(hAccepted, &filesize)) {
+				ss << "Server: Error converting (readlong) file";
+				std::cerr << ss.str() << std::endl;
+				p.set_value(ss.str());
+				return;
+			}
 			std::cout << "Server: ReadLong successful" << std::endl;
 
 			if (filesize > 0)
@@ -207,9 +164,12 @@ namespace socklib
 					int num = min(filesize, sizeof(buffer));
 					std::cout << "Server: FileSize = " << num << std::endl;
 
-
-					if (!readdata(hAccepted, buffer, num))
-						return ss.str();
+					if (!readdata(hAccepted, buffer, num)) {
+						ss << "Server: Error reading file";
+						std::cerr << ss.str() << std::endl;
+						p.set_value(ss.str());
+						return;
+					}
 
 					int offset = 0;
 					do
@@ -217,8 +177,12 @@ namespace socklib
 
 						size_t written = fwrite(&buffer[offset], 1, num - offset, f);
 						std::cout << "Server: File Writing to Buffer - " << offset << std::endl;
-						if (written < 1)
-							return ss.str();
+						if (written < 1) {
+							ss << "Server: Error writing file to buffer";
+							std::cerr << ss.str() << std::endl;
+							p.set_value(ss.str());
+							return;
+						}
 						offset += written;
 
 					} while (offset < num);
@@ -232,41 +196,26 @@ namespace socklib
 			else
 				std::cout << "Server: Empty File" << std::endl;
 
-
-			// Finished!
-			fclose(f);
-			closesocket(hSocket);
-			WSACleanup();
 			ss << "File Recieved!";
-			p.set_value(ss.str());
-			return ss.str();
+			break;
 		}
-		catch (std::exception ex) {
-			return ex.what();
-		}
+
+		// Return Value
+		p.set_value(ss.str());
+
+		// Clean up
+		closesocket(hSocket);
+		WSACleanup();
 	}
 
-	// Implemented Methods
-	std::string SocketListener::ListenForMessage()
-	{
+
+	std::string SocketListener::Listen() {
 		std::promise<std::string> p;
 		auto f = p.get_future();
-		std::thread t(&task_MessageListener, std::move(p), _ip, _port);
+		std::thread t(&task_listen, std::move(p), _ip, _port);
 		t.join();
-		// Sleep(1000); // Debugging
+		// Sleep(1000); return "Finished"; // Debugging
 		return f.get();
-
-	}
-
-	std::string SocketListener::ListenForFile()
-	{
-		std::promise<std::string> p;
-		auto f = p.get_future();
-		std::thread t(&task_FileListener, std::move(p), _ip, _port);
-		t.join();
-		// Sleep(1000); // Debugging
-		return f.get();
-
 	}
 
 }

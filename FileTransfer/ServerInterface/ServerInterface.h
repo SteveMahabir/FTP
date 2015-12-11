@@ -20,9 +20,7 @@ namespace ServerInterface {
 
 		ServerSocket(System::String^ ip, unsigned port);
 
-		System::String^ RecieveMessage();
-
-		System::String^ RecieveFile();
+		System::String^ Recieve();
 	};
 
 

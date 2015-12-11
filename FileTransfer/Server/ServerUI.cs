@@ -137,7 +137,7 @@ namespace Server
                 try
                 {
                     //String returnLine = await ListenForMessages(_ipaddress, _portnumber);
-                    String returnLine = await ListenForFile(_ipaddress, _portnumber);
+                    String returnLine = await Listen(_ipaddress, _portnumber);
                     returnLine += " at " + DateTime.Now.ToShortDateString();
                     listStatus.Items.Add(returnLine.ToString());
                 }
@@ -149,7 +149,7 @@ namespace Server
 
         }
 
-        public Task<String> ListenForMessages(String ip, uint port)
+        public Task<String> Listen(String ip, uint port)
         {
 
 
@@ -157,22 +157,7 @@ namespace Server
             (() =>
             {
                 ServerSocket s = new ServerSocket(ip, port);
-                return s.RecieveMessage();
-            }
-            );
-            t1.Start();
-            return t1;
-        }
-
-        public Task<String> ListenForFile(String ip, uint port)
-        {
-
-
-            Task<String> t1 = new Task<String>
-            (() =>
-            {
-                ServerSocket s = new ServerSocket(ip, port);
-                return s.RecieveFile();
+                return s.Recieve();
             }
             );
             t1.Start();

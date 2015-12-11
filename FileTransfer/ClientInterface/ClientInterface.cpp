@@ -27,8 +27,6 @@ namespace ClientInterface
 
 	System::String^ ClientSocket::SendMessage(System::String^ message)
 	{
-		msclr::interop::marshal_context context;
-		std::string standardString = context.marshal_as<std::string>(_ipaddress);
 		socklib::SocketSender s(convert(_ipaddress), _port);
 
 		return convert(s.sendMessage(convert(message)).c_str());

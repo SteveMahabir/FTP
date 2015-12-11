@@ -33,30 +33,15 @@ namespace ServerInterface
 			_port = port;
 		}
 
-		//controls Thread that prints message
-		void ListenForMessages()
+		// Controls the Thread that listens for client sending
+		void Listen()
 		{
 			// obtain reference to currently executing thread
 			Thread^ current = Thread::CurrentThread;
 
 			Console::WriteLine(current->Name + " started");
 			socklib::SocketListener socketlistener(convert(_ip_address), _port);
-			return_message = convert(socketlistener.ListenForMessage());
-
-			Console::WriteLine(current->Name + " finished");
-
-		} // end method Print
-
-		  //controls Thread that prints message
-		void ListenForFiles()
-		{
-			// obtain reference to currently executing thread
-			Thread^ current = Thread::CurrentThread;
-
-			Console::WriteLine(current->Name + " started");
-
-			socklib::SocketListener socketlistener(convert(_ip_address), _port);
-			return_message = convert(socketlistener.ListenForFile());
+			return_message = convert(socketlistener.Listen());
 
 			Console::WriteLine(current->Name + " finished");
 
@@ -65,6 +50,7 @@ namespace ServerInterface
 		System::String^ getLastMessage() {
 			return return_message;
 		}
+
 
 	}; // end class MessagePrinter  
 
@@ -77,20 +63,20 @@ namespace ServerInterface
 	}
 
 
-	System::String^ ServerSocket::RecieveMessage() {
+	System::String^ ServerSocket::Recieve() {
 
 		// Create and name each thread. Use MessagePrinter's
 		// Print method as argument to ThreadStart delegate.
 		TaskListener^ listener = gcnew TaskListener(_ipaddress, _port);
-		Thread^ thread1 = gcnew Thread(gcnew ThreadStart(listener, &TaskListener::ListenForMessages));
-		thread1->Name = "thread1";
+		Thread^ thread1 = gcnew Thread(gcnew ThreadStart(listener, &TaskListener::Listen));
+		thread1->Name = "ThreadListener";
 
 
-		Console::WriteLine("Starting thread");
+		Console::WriteLine("Starting ThreadListener");
 
 		thread1->Start();
 
-		Console::WriteLine("Thread started\n");
+		Console::WriteLine("ThreadListener started\n");
 
 
 		thread1->Join();
@@ -98,25 +84,4 @@ namespace ServerInterface
 		return listener->getLastMessage();
 	}
 
-	System::String^ ServerSocket::RecieveFile() {
-		
-		// Create and name each thread. Use MessagePrinter's
-		// Print method as argument to ThreadStart delegate.
-		TaskListener^ listener = gcnew TaskListener(_ipaddress, _port);
-		Thread^ thread1 = gcnew Thread(gcnew ThreadStart(listener, &TaskListener::ListenForFiles));
-		thread1->Name = "thread1";
-
-
-		Console::WriteLine("Starting thread");
-
-		thread1->Start();
-
-		Console::WriteLine("Thread started\n");
-
-
-		thread1->Join();
-
-		return listener->getLastMessage();
-
-	}
 }

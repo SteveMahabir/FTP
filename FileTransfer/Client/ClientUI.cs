@@ -29,6 +29,7 @@ namespace Client
 
         private void buttonSend_Click(object sender, EventArgs e)
         {
+
             try {
 
                 IPAddress ipadd;
