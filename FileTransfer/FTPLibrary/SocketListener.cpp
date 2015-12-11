@@ -141,7 +141,7 @@ namespace socklib
 			std::cout << "Server: Recieved Message [" << messageBufferSize << "]: " << receivedMessage << std::endl;
 
 			// Set the return string with the message received
-			ss << receivedMessage;
+			ss << "[msg] " << receivedMessage;
 
 			// Send the Confirmation of Receival
 			confirmationMessageSent = send(hAccepted, sendbuf, strlen(sendbuf) + 1, 0);
